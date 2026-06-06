@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Lirio Morado | Floreciendo paso a paso</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #0a1a1a 0%, #0d2a1f 50%, #0a1a12 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .title {
+            color: #e8d0ff;
+            text-shadow: 0 0 15px rgba(156, 80, 255, 0.6);
+            font-size: clamp(1rem, 5vw, 1.5rem);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            padding: 0 10px;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 6px rgba(156, 80, 255, 0.2);
+            background: radial-gradient(circle at 30% 30%, #1e3a2a, #0d2a1a);
+            width: 100%;
+            height: auto;
+            max-width: 500px;
+            aspect-ratio: 1 / 1;
+            cursor: pointer;
+        }
+
+        .reset-btn {
+            margin-top: 25px;
+            background: rgba(156, 80, 255, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid #b77eff;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-size: clamp(0.8rem, 4vw, 1rem);
+            font-weight: bold;
+            color: #e0ccff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: auto;
+            min-width: 200px;
+        }
+        .reset-btn:hover {
+            background: #b77eff;
+            color: #1a0a2e;
+            box-shadow: 0 0 20px #b77eff;
+            transform: scale(1.05);
+        }
+        .reset-btn:active {
+            transform: scale(0.98);
+        }
+
+        .status {
+            margin-top: 18px;
+            font-size: clamp(0.75rem, 3.5vw, 0.9rem);
+            color: #c2b0f0;
+            letter-spacing: 1px;
+            padding: 0 15px;
+            min-height: 50px;
+        }
+
+        /* Mensaje final - AHORA APARECE DEBAJO */
+        .mensaje-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto 30px auto;
+            padding: 0 15px;
+        }
+
+        .mensaje-final {
+            display: none;
+            padding: 25px 20px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(199,125,255,0.4);
+            border-radius: 20px;
+            color: #f3e8ff;
+            text-align: center;
+            line-height: 1.7;
+            box-shadow: 0 0 25px rgba(183,126,255,0.2);
+            font-size: clamp(0.8rem, 4vw, 1rem);
+        }
+
+        .mensaje-final h2 {
+            margin-bottom: 15px;
+            font-size: clamp(1.2rem, 5vw, 1.5rem);
+        }
+
+        .mensaje-final p {
+            margin-bottom: 14px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            .reset-btn {
+                padding: 10px 20px;
+                min-width: 170px;
+            }
+            .mensaje-final {
+                padding: 20px 15px;
+            }
+        }
+
+        @media (max-width: 450px) {
+            body {
+                padding: 10px;
+            }
+            .reset-btn {
+                padding: 8px 16px;
+                min-width: 150px;
+            }
+            .mensaje-final {
+                padding: 15px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="title">🌿 Lirio Rosa para tí 🌸</h2>
+        <canvas id="lilyCanvas" width="500" height="500"></canvas>
+        <button class="reset-btn" id="resetBtn">🔄 Ver florecer de nuevo</button>
+        <div class="status" id="statusText">🌱 El lirio está despertando...</div>
+    </div>
+    
+    <!-- Mensaje final: aparece DEBAJO del canvas, no al lado -->
+    <div class="mensaje-container">
+        <div id="mensajeFinal" class="mensaje-final">
+            <h2>Querida Vanessa</h2>
+
+            <p>
+                No sé si algún día leerás esto con calma, pero quería dejar estas palabras aquí.
+            </p>
+
+            <p>
+                Mientras hacía este lirio, pensé mucho en nosotros. Pensé en los momentos buenos, en las veces que nos reíamos por cualquier cosa, en las películas, en las pláticas, en todo lo que compartimos durante ese tiempo.
+            </p>
+
+            <p>
+                También pensé en mis errores.
+            </p>
+
+            <p>
+                Sé que hice cosas que te lastimaron y entiendo que eso cambió muchas cosas. No escribo esto para justificarme ni para convencerte de nada. Simplemente quería que supieras que todo esto me hizo reflexionar mucho más de lo que imaginas.
+            </p>
+
+            <p>
+                A veces me cuesta creer que algo que se sentía tan bonito haya terminado tan rápido. Hay días en los que todavía extraño hablar contigo, contarte cómo estuvo mi día o simplemente saber de ti.
+            </p>
+
+            <p>
+                Pero entre todo lo que ha pasado, también entendí algo importante que las personas pueden cambiar, aprender y crecer.
+            </p>
+
+            <p>
+                No sé qué pasará mañana, dentro de un mes o dentro de varios años. No tengo esa respuesta. Lo único que sé es que conocerte marcó una etapa muy importante de mi vida y que siempre voy a agradecer los momentos que compartimos.
+            </p>
+
+            <p>
+                Si algún día llegas a pensar en mí, me gustaría que recordaras no solamente mis errores, sino también a ese muchacho que se emocionaba al verte, que disfrutaba pasar tiempo contigo y que de verdad te quiso con todo su corazón.
+            </p>
+
+            <p>
+                Gracias por cada recuerdo.
+            </p>
+
+            <p>
+                Y aunque hoy las cosas sean diferentes, siempre voy a desear que te vaya bien, que cumplas tus sueños y que seas feliz.
+            </p>
+
+            <p style="font-size:1.3rem; color:#d8b4fe; font-weight:bold;">Te amo con todo mi corazón Vanessa 💗</p>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const canvas = document.getElementById('lilyCanvas');
+            const ctx = canvas.getContext('2d');
+            const resetBtn = document.getElementById('resetBtn');
+            const statusSpan = document.getElementById('statusText');
+            const mensajeFinal = document.getElementById('mensajeFinal');
+
+            const w = 500, h = 500;
+            canvas.width = w;
+            canvas.height = h;
+            
+            const centerX = w/2;
+            const centerY = h/2 - 10;
+            
+            const petals = [
+                { angle: -90, color1: '#c77dff', color2: '#9b4dff', size: 88, open: 0 },
+                { angle: -30, color1: '#c77dff', color2: '#9b4dff', size: 86, open: 0 },
+                { angle: -150, color1: '#c77dff', color2: '#9b4dff', size: 86, open: 0 },
+                { angle: 30, color1: '#d591ff', color2: '#b05eff', size: 80, open: 0 },
+                { angle: -210, color1: '#d591ff', color2: '#b05eff', size: 80, open: 0 },
+                { angle: 90, color1: '#b868ff', color2: '#8833ff', size: 82, open: 0 },
+                { angle: -50, color1: '#e5aaff', color2: '#c77dff', size: 58, open: 0 },
+                { angle: -130, color1: '#e5aaff', color2: '#c77dff', size: 58, open: 0 },
+                { angle: 10, color1: '#f0bbff', color2: '#d591ff', size: 50, open: 0 },
+                { angle: -170, color1: '#f0bbff', color2: '#d591ff', size: 50, open: 0 }
+            ];
+            
+            function drawPetal(x, y, angleDeg, color1, color2, size, openness) {
+                if (openness <= 0) return;
+                
+                const angleRad = angleDeg * Math.PI / 180;
+                const actualSize = size * Math.min(1, openness * 1.2);
+                const cx = x + Math.cos(angleRad) * 15 * openness;
+                const cy = y + Math.sin(angleRad) * 15 * openness;
+                const tipX = cx + Math.cos(angleRad) * actualSize;
+                const tipY = cy + Math.sin(angleRad) * actualSize;
+                const spread = Math.PI / 4 * openness;
+                const leftX = cx + Math.cos(angleRad - spread) * (actualSize * 0.65);
+                const leftY = cy + Math.sin(angleRad - spread) * (actualSize * 0.65);
+                const rightX = cx + Math.cos(angleRad + spread) * (actualSize * 0.65);
+                const rightY = cy + Math.sin(angleRad + spread) * (actualSize * 0.65);
+                
+                const grad = ctx.createLinearGradient(cx, cy, tipX, tipY);
+                grad.addColorStop(0, color1);
+                grad.addColorStop(1, color2);
+                
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.quadraticCurveTo(leftX, leftY, tipX, tipY);
+                ctx.quadraticCurveTo(rightX, rightY, cx, cy);
+                ctx.fillStyle = grad;
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(tipX, tipY);
+                ctx.strokeStyle = `rgba(255, 220, 255, 0.4)`;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+            
+            function drawStem() {
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY + 35);
+                ctx.lineTo(centerX, centerY + 190);
+                ctx.lineWidth = 9;
+                ctx.strokeStyle = "#3c9e5a";
+                ctx.stroke();
+            }
+            
+            function drawLeaves() {
+                ctx.beginPath();
+                ctx.moveTo(centerX - 5, centerY + 100);
+                ctx.quadraticCurveTo(centerX - 50, centerY + 125, centerX - 65, centerY + 170);
+                ctx.quadraticCurveTo(centerX - 25, centerY + 145, centerX - 5, centerY + 100);
+                ctx.fillStyle = "#4fae6b";
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.moveTo(centerX + 5, centerY + 125);
+                ctx.quadraticCurveTo(centerX + 55, centerY + 150, centerX + 70, centerY + 195);
+                ctx.quadraticCurveTo(centerX + 30, centerY + 170, centerX + 5, centerY + 125);
+                ctx.fill();
+            }
+            
+            function drawCenter(progress) {
+                const r = 32 * Math.min(1, progress);
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
+                ctx.fillStyle = "#6b3a2a";
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r - 5, 0, Math.PI * 2);
+                ctx.fillStyle = "#9b5a3a";
+                ctx.fill();
+                
+                for (let i = 0; i < 80; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = Math.random() * (r - 6);
+                    const px = centerX + Math.cos(angle) * dist;
+                    const py = centerY + Math.sin(angle) * dist;
+                    ctx.beginPath();
+                    ctx.arc(px, py, 1.5, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 200, 100, ${0.3 + Math.random() * 0.5})`;
+                    ctx.fill();
+                }
+            }
+            
+            function drawStamens(progress) {
+                if (progress <= 0) return;
+                
+                for (let i = 0; i < 24; i++) {
+                    const angle = (i / 24) * Math.PI * 2;
+                    const length = 38 * Math.min(1, progress);
+                    const baseX = centerX + Math.cos(angle) * 32;
+                    const baseY = centerY + Math.sin(angle) * 32;
+                    const tipX = baseX + Math.cos(angle) * length;
+                    const tipY = baseY + Math.sin(angle) * length;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(baseX, baseY);
+                    ctx.lineTo(tipX, tipY);
+                    ctx.strokeStyle = `rgba(255, 220, 80, ${0.5 + progress * 0.4})`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.arc(tipX, tipY, 4 * Math.min(1, progress), 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 200, 40, 0.7)`;
+                    ctx.fill();
+                }
+            }
+            
+            function drawBackground() {
+                const grad = ctx.createLinearGradient(0, 0, w, h);
+                grad.addColorStop(0, "#143626");
+                grad.addColorStop(1, "#0a1f15");
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, w, h);
+            }
+            
+            let mensajeMostrado = false;
+            
+            async function animateStepByStep() {
+                mensajeMostrado = false;
+                mensajeFinal.style.display = 'none';
+                drawBackground();
+                
+                statusSpan.innerHTML = "🌱 Dibujando el tallo... 🌱";
+                drawStem();
+                await sleep(400);
+                
+                statusSpan.innerHTML = "🍃 Dibujando las hojas... 🍃";
+                drawLeaves();
+                await sleep(400);
+                
+                statusSpan.innerHTML = "🌸 Abriendo pétalos interiores... 🌸";
+                for (let i = 6; i < petals.length; i++) {
+                    const p = petals[i];
+                    for (let open = 0.2; open <= 1.0; open += 0.25) {
+                        drawPetal(centerX, centerY - 5, p.angle, p.color1, p.color2, p.size, open);
+                        await sleep(30);
+                    }
+                }
+                await sleep(200);
+                
+                for (let i = 0; i < 6; i++) {
+                    statusSpan.innerHTML = `🌸 Abriendo pétalo ${i+1}/6... 🌸`;
+                    const p = petals[i];
+                    for (let open = 0.2; open <= 1.0; open += 0.2) {
+                        drawPetal(centerX, centerY - 5, p.angle, p.color1, p.color2, p.size, open);
+                        await sleep(40);
+                    }
+                }
+                
+                statusSpan.innerHTML = "🌰 Dibujando el centro... 🌰";
+                for (let prog = 0.3; prog <= 1.0; prog += 0.35) {
+                    drawCenter(prog);
+                    await sleep(120);
+                }
+                
+                statusSpan.innerHTML = "✨ Brotando los estambres... ✨";
+                for (let prog = 0.3; prog <= 1.0; prog += 0.35) {
+                    drawStamens(prog);
+                    await sleep(150);
+                }
+                
+                statusSpan.innerHTML = "💜 ¡El lirio morado ha florecido completamente! 💜";
+                
+                if (!mensajeMostrado) {
+                    mensajeMostrado = true;
+                    await sleep(1000);
+                    mensajeFinal.style.display = 'block';
+                    mensajeFinal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            
+            async function resetAnimation() {
+                mensajeMostrado = false;
+                mensajeFinal.style.display = 'none';
+                statusSpan.innerHTML = "✨ Reiniciando floración... ✨";
+                ctx.clearRect(0, 0, w, h);
+                drawBackground();
+                for (let p of petals) p.open = 0;
+                await sleep(300);
+                animateStepByStep();
+            }
+            
+            resetBtn.addEventListener('click', resetAnimation);
+            
+            drawBackground();
+            animateStepByStep();
+        })();
+    </script>
+</body>
+</html>
